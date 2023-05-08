@@ -1,0 +1,56 @@
+#include <iostream>
+#include <vector>
+
+using namespace std;
+
+void dfs(vector<vector<int>>& graph, int source, int destination, vector<bool>& visited, bool& pathExists) {
+    visited[source] = true;
+    if (source == destination) {
+        pathExists = true;
+        return;
+    }
+
+    for (int i = 0; i < graph[source].size(); i++) {
+        int neighbor = graph[source][i];
+        if (!visited[neighbor]) {
+            dfs(graph, neighbor, destination, visited, pathExists);
+        }
+    }
+}
+
+int main() {
+    int n;
+    cout << "Enter the number of nodes: ";
+    cin >> n;
+
+    vector<vector<int>> graph(n, vector<int>());
+    cout << "Enter the adjacency matrix:" << endl;
+    for (int i = 0; i < n; i++) {
+        string row;
+        cin >> row;
+        for (int j = 0; j < row.size(); j++) {
+            if (row[j] == '1') {
+                graph[i].push_back(j);
+            }
+        }
+    }
+
+    int source, destination;
+    cout << "Enter the source and destination nodes (1-based indexing): ";
+    cin >> source >> destination;
+
+    vector<bool> visited(n, false);
+    bool pathExists = false;
+
+    dfs(graph, source - 1, destination - 1, visited, pathExists);
+
+    if (pathExists) {
+        cout << "Yes, a path exists between node " << source << " and node " << destination << "." << endl;
+    } else {
+        cout << "No, there is no path between node " << source << " and node " << destination << "." << endl;
+    }
+
+    return 0;
+}
+
+
