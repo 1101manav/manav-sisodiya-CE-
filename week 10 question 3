@@ -1,0 +1,55 @@
+#include <iostream>
+#include <vector>
+#include <algorithm>
+
+bool hasMajorityElement(const std::vector<int>& arr) {
+    int n = arr.size();
+    int majorityCount = n / 2 + 1;
+
+    std::vector<int> uniqueElements(arr);
+    std::sort(uniqueElements.begin(), uniqueElements.end());
+
+    int count = 1;
+    for (int i = 1; i < n; i++) {
+        if (uniqueElements[i] == uniqueElements[i - 1]) {
+            count++;
+            if (count >= majorityCount) {
+                return true;
+            }
+        } else {
+            count = 1;
+        }
+    }
+
+    return false;
+}
+
+double findMedian(const std::vector<int>& arr) {
+    int n = arr.size();
+    std::vector<int> sortedArr(arr);
+    std::sort(sortedArr.begin(), sortedArr.end());
+
+    if (n % 2 == 0) {
+        return (sortedArr[n / 2 - 1] + sortedArr[n / 2]) / 2.0;
+    } else {
+        return sortedArr[n / 2];
+    }
+}
+
+int main() {
+    int n;
+    std::cin >> n;
+
+    std::vector<int> arr(n);
+    for (int i = 0; i < n; i++) {
+        std::cin >> arr[i];
+    }
+
+    bool hasMajority = hasMajorityElement(arr);
+    double median = findMedian(arr);
+
+    std::cout << (hasMajority ? "yes" : "no") << std::endl;
+    std::cout << median << std::endl;
+
+    return 0;
+}
