@@ -1,0 +1,102 @@
+#include <iostream>
+#include <vector>
+#include <algorithm>
+
+using namespace std;
+
+// Structure to represent an edge in the graph
+struct Edge {
+    int src;
+    int dest;
+    int weight;
+
+    Edge(int _src, int _dest, int _weight) : src(_src), dest(_dest), weight(_weight) {}
+};
+
+// Find operation for the disjoint set data structure
+int find(vector<int>& parent, int node) {
+    if (parent[node] == node) {
+        return node;
+    }
+    return find(parent, parent[node]);
+}
+
+// Union operation for the disjoint set data structure
+void Union(vector<int>& parent, vector<int>& rank, int x, int y) {
+    int xRoot = find(parent, x);
+    int yRoot = find(parent, y);
+
+    if (rank[xRoot] < rank[yRoot]) {
+        parent[xRoot] = yRoot;
+    } else if (rank[xRoot] > rank[yRoot]) {
+        parent[yRoot] = xRoot;
+    } else {
+        parent[yRoot] = xRoot;
+        rank[xRoot]++;
+    }
+}
+
+// Comparator for sorting edges based on their weights
+bool compareEdges(const Edge& a, const Edge& b) {
+    return a.weight < b.weight;
+}
+
+// Function to find the minimum spanning weight using Kruskal's algorithm
+int findMinimumSpanningWeight(int numVertices, const vector<Edge>& edges) {
+    vector<int> parent(numVertices);
+    vector<int> rank(numVertices, 0);
+
+    for (int i = 0; i < numVertices; ++i) {
+        parent[i] = i; // Initialize each vertex as a separate disjoint set
+    }
+
+    int minimumSpanningWeight = 0;
+    int edgesIncluded = 0;
+
+    for (const Edge& edge : edges) {
+        int srcRoot = find(parent, edge.src);
+        int destRoot = find(parent, edge.dest);
+
+        if (srcRoot != destRoot) {
+            Union(parent, rank, srcRoot, destRoot);
+            minimumSpanningWeight += edge.weight;
+            edgesIncluded++;
+        }
+
+        // Stop when N-1 edges have been included
+        if (edgesIncluded == numVertices - 1) {
+            break;
+        }
+    }
+
+    return minimumSpanningWeight;
+}
+
+int main() {
+    int numVertices;
+    cout << "Enter the number of vertices in the graph: ";
+    cin >> numVertices;
+
+    vector<Edge> edges;
+
+    cout << "Enter the adjacency matrix or adjacency list of the graph:\n";
+    for (int i = 0; i < numVertices; ++i) {
+        for (int j = 0; j < numVertices; ++j) {
+            int weight;
+            cin >> weight;
+
+            if (weight != 0) {
+                edges.push_back(Edge(i, j, weight));
+            }
+        }
+    }
+
+    // Sort the edges based on their weights
+    sort(edges.begin(), edges.end(), compareEdges);
+
+    int minimumSpanningWeight = findMinimumSpanningWeight(numVertices, edges);
+    cout << "Minimum Spanning Weight: " << minimumSpanningWeight << endl;
+
+    return 0;
+}
+
