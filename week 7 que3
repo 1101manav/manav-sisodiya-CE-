@@ -1,0 +1,86 @@
+#include <iostream>
+#include <vector>
+#include <queue>
+#include <climits>
+using namespace std;
+
+typedef pair<int, int> pii;
+
+int primMinimumCost(const vector<vector<pii>>& graph) {
+    int numVertices = graph.size();
+
+    vector<int> minCost(numVertices, INT_MAX);
+
+    vector<int> parent(numVertices, -1);
+    
+    vector<bool> included(numVertices, false);
+
+    int startVertex = 0;
+    minCost[startVertex] = 0;
+
+    priority_queue<pii, vector<pii>, greater<pii>> pq;
+    pq.push({0, startVertex});
+
+    while (!pq.empty()) {
+        
+        int weight = pq.top().first;
+        int currentVertex = pq.top().second;
+        pq.pop();
+
+        if (included[currentVertex])
+            continue;
+
+        included[currentVertex] = true;
+
+        for (const auto& neighbor : graph[currentVertex]) {
+            int adjVertex = neighbor.first;
+            int edgeWeight = neighbor.second;
+
+            if (!included[adjVertex] && edgeWeight < minCost[adjVertex]) {
+            
+                minCost[adjVertex] = edgeWeight;
+                parent[adjVertex] = currentVertex;
+
+                pq.push({edgeWeight, adjVertex});
+            }
+        }
+    }
+
+    int totalCost = 0;
+    for (int i = 0; i < numVertices; ++i) {
+        if (minCost[i] != INT_MAX)
+            totalCost += minCost[i];
+    }
+
+    return totalCost;
+}
+
+int main() {
+    int numCities, numRoads;
+    cout << "Enter the number of cities: ";
+    cin >> numCities;
+    numRoads = numCities - 1;
+
+    vector<vector<pii>> graph(numCities);
+
+    cout << "Enter the roads and their construction costs:\n";
+    for (int i = 0; i < numRoads; ++i) {
+        int city1, city2, cost;
+        cout << "Road " << i + 1 << ":\n";
+        cout << "City 1: ";
+        cin >> city1;
+        cout << "City 2: ";
+        cin >> city2;
+        cout << "Construction cost: ";
+        cin >> cost;
+
+        graph[city1].push_back({city2, cost});
+        graph[city2].push_back({city1, cost});
+    }
+
+    int minimumBudget = primMinimumCost(graph);
+    cout << "Minimum budget required: " << minimumBudget << " rupees\n";
+
+    return 0;
+}
+
