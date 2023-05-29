@@ -1,0 +1,62 @@
+#include <iostream>
+#include <vector>
+#include <algorithm>
+
+struct Task {
+    int index;
+    int time;
+    int deadline;
+};
+
+bool compareTasks(const Task& a, const Task& b) {
+    return a.deadline < b.deadline;
+}
+
+std::pair<int, std::vector<int>> selectTasks(int n, const std::vector<int>& times, const std::vector<int>& deadlines) {
+    std::vector<Task> tasks;
+    for (int i = 0; i < n; i++) {
+        tasks.push_back({ i, times[i], deadlines[i] });
+    }
+
+    std::sort(tasks.begin(), tasks.end(), compareTasks);
+
+    int maxTasks = 0;
+    std::vector<int> selectedTasks;
+
+    int currentTime = 0;
+    for (int i = 0; i < n; i++) {
+        if (currentTime + tasks[i].time <= tasks[i].deadline) {
+            maxTasks++;
+            selectedTasks.push_back(tasks[i].index);
+            currentTime += tasks[i].time;
+        }
+    }
+
+    return { maxTasks, selectedTasks };
+}
+
+int main() {
+    int n;
+    std::cin >> n;
+
+    std::vector<int> times(n);
+    std::vector<int> deadlines(n);
+
+    for (int i = 0; i < n; i++) {
+        std::cin >> times[i];
+    }
+
+    for (int i = 0; i < n; i++) {
+        std::cin >> deadlines[i];
+    }
+
+    std::pair<int, std::vector<int>> result = selectTasks(n, times, deadlines);
+
+    std::cout << result.first << std::endl;
+    for (int i = 0; i < result.second.size(); i++) {
+        std::cout << result.second[i] << " ";
+    }
+    std::cout << std::endl;
+
+    return 0;
+}
