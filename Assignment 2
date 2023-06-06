@@ -1,0 +1,134 @@
+/*69
+Given a non-negative integer x, return the square root of x rounded down to the nearest integer. The returned integer should be non-negative as well.
+You must not use any built-in exponent function or operator.
+For example, do not use pow(x, 0.5) in c++ or x ** 0.5 in python.
+Example 1:
+Input: x = 4
+Output: 2
+Explanation: The square root of 4 is 2, so we return 2.
+Example 2:
+Input: x = 8
+Output: 2
+Explanation: The square root of 8 is 2.82842..., and since we round it down to the nearest integer, 2 is returned.
+Constraints
+0 <= x <= 231 - 1
+*/
+class Solution {
+public:
+    int mySqrt(int x) {
+        return sqrt(x);
+    }
+};
+
+
+/* 605
+You have a long flowerbed in which some of the plots are planted, and some are not. However, flowers cannot be planted in adjacent plots.
+Given an integer array flowerbed containing 0's and 1's, where 0 means empty and 1 means not empty, and an integer n, return true if n new flowers can be planted in the flowerbed without violating the no-adjacent-flowers rule and false otherwise.
+*/
+class Solution {
+public:
+    bool canPlaceFlowers(vector<int>& flowerbed, int n) {
+        int c = 0, i = 0;
+        if (n == 0) {
+            return true;
+        }
+        while (i < flowerbed.size()) {
+            if (flowerbed[i] == 0 && (i == 0 || flowerbed[i-1] == 0) && (i == flowerbed.size()-1 || flowerbed[i+1] == 0)) {
+                c++;
+                flowerbed[i] = 1;
+            }
+            i++;
+        }
+        return c >= n;
+    }
+};
+
+
+/* 2418
+You are given an array of strings names, and an array heights that consists of distinct positive integers. Both arrays are of length n.
+For each index i, names[i] and heights[i] denote the name and height of the ith person.
+Return names sorted in descending order by the people's heights.
+*/
+class Solution {
+public:
+    vector<string> sortPeople(vector<string>& names, vector<int>& heights) {
+        map<int , string , greater<int>> m;
+        int i=0;
+        while(i<names.size())
+        {
+            m.insert(make_pair(heights[i],names[i]));
+            i++;
+        }
+        vector<string> v;
+        for(auto it=m.begin();it!=m.end();it++)
+        {
+            v.push_back((*it).second);
+        }
+        return v;
+    }
+};
+
+
+/* 912
+Given an array of integers nums, sort the array in ascending order and return it.
+You must solve the problem without using any built-in functions in O(nlog(n)) time complexity and with the smallest space complexity possible.
+*/
+void quickSort(vector<int>& nums, int low, int high) {
+    if (low < high) {
+        int pivot = nums[high];
+        int i = low - 1;
+        for (int j = low; j <= high - 1; j++) {
+            if (nums[j] < pivot) {
+                i++;
+                swap(nums[i], nums[j]);
+            }
+        }
+        swap(nums[i + 1], nums[high]);
+        int p = i + 1;
+        quickSort(nums, low, p - 1);
+        quickSort(nums, p + 1, high);
+    }
+}
+
+
+/* 42
+Given n non-negative integers representing an elevation map where the width of each bar is 1, compute how much water it can trap after raining.
+*/
+
+class Solution {
+public:
+    int trap(vector<int>& height) {
+        int n=height.size();
+        int i=0,j=n-1;
+        int maxleft=0,maxright=0;
+        int c=0;
+        while(i<=j)
+        {
+            if(height[i]<=height[j])
+            {
+                if(height[i]>=maxleft)
+                {
+                    maxleft=height[i];
+                }
+                else
+                {
+                    c=c+maxleft-height[i];
+                }
+                i++;
+            }
+            else
+            {
+                if(height[j]>=maxright)
+                {
+                    maxright=height[j];
+                }
+                else
+                {
+                    c=c+maxright-height[j];
+                }
+                j--;
+            }
+        }
+        return c;
+    }
+};
