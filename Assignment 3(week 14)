@@ -1,0 +1,119 @@
+/*
+Q:1 Ugly numbers
+/*
+#include <iostream>
+using namespace std;
+bool isUgly(int num) {
+    if (num <= 0)
+        return false;
+    
+    while (num % 2 == 0)
+        num /= 2;
+    
+    while (num % 3 == 0)
+        num /= 3;
+    
+    while (num % 5 == 0)
+        num /= 5;
+    
+    return num == 1;
+}
+
+int nthUglyNumber(int n) {
+    int count = 0;
+    int num = 1;
+    
+    while (count < n) {
+        if (isUgly(num))
+            count++;
+        
+        num++;
+    }
+    
+    return num - 1;
+}
+
+int main() {
+    int T;
+    cout<<"Input number of test cases"<<endl;
+    cin >> T;
+    for (int i = 0; i < T; i++) {
+        int n;
+        cout<<"Input number"<<endl;
+        cin >> n;
+        cout<<"Ugly number"<<endl<<nthUglyNumber(n)<<std::endl;
+    }
+
+    return 0;
+}
+
+
+/*
+Q:2 Mother vertex
+*/
+#include <iostream>
+#include <vector>
+#include <stack>
+
+void DFS(const std::vector<std::vector<int>>& graph, int v, std::vector<bool>& visited) {
+    visited[v] = true;
+    
+    for (int neighbor : graph[v]) {
+        if (!visited[neighbor])
+            DFS(graph, neighbor, visited);
+    }
+}
+
+int findMotherVertex(const std::vector<std::vector<int>>& graph, int numVertices) {
+    std::vector<bool> visited(numVertices, false);
+    int mother = -1;
+
+    for (int v = 0; v < numVertices; v++) {
+        if (!visited[v]) {
+            DFS(graph, v, visited);
+            mother = v;
+        }
+    }
+
+    // Check if mother is a valid mother vertex
+    visited.assign(numVertices, false);
+    DFS(graph, mother, visited);
+    
+    for (bool vertexVisited : visited) {
+        if (!vertexVisited)
+            return -1; // No mother vertex found
+    }
+
+    return mother;
+}
+
+int main() {
+    int numVertices;
+    std::cout << "Enter the number of vertices: ";
+    std::cin >> numVertices;
+
+    std::vector<std::vector<int>> graph(numVertices);
+
+    std::cout << "Enter the adjacency list:\n";
+    for (int v = 0; v < numVertices; v++) {
+        int numNeighbors;
+        std::cout << "Enter the number of neighbors of vertex " << v << ": ";
+        std::cin >> numNeighbors;
+
+        std::cout << "Enter the neighbors of vertex " << v << ": ";
+        for (int i = 0; i < numNeighbors; i++) {
+            int neighbor;
+            std::cin >> neighbor;
+            graph[v].push_back(neighbor);
+        }
+    }
+
+    int mother = findMotherVertex(graph, numVertices);
+
+    if (mother != -1)
+        std::cout << "Mother vertex: " << mother << std::endl;
+    else
+        std::cout << "No mother vertex found." << std::endl;
+
+    return 0;
+}
