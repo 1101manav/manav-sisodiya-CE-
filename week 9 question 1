@@ -1,0 +1,55 @@
+/*
+Given a graph, Design an algorithm and implement it using a program to implement Floyd-
+Warshall all pair shortest path algorithm.
+*/
+#include <bits/stdc++.h>
+#include <limits.h>
+using namespace std;
+void floydWarshall(int dist[][100],int V)
+{
+    int i, j, k;
+    for (k = 0; k < V; k++) {
+        for (i = 0; i < V; i++) {
+            for (j = 0; j < V; j++) {
+                if (dist[i][j] > (dist[i][k] + dist[k][j])
+                    && (dist[k][j] != INT_MAX
+                        && dist[i][k] != INT_MAX))
+                    dist[i][j] = dist[i][k] + dist[k][j];
+            }
+        }
+    }
+    cout << "The following matrix shows the shortest "
+            "distances"
+            " between every pair of vertices:\n";
+    for (int i = 0; i < V; i++) {
+        for (int j = 0; j < V; j++) {
+            if (dist[i][j] == INT_MAX)
+                cout << "INF "
+                     << " ";
+            else
+                cout << dist[i][j] << "   ";
+        }
+        cout << endl;
+    }
+}
+int main()
+{
+    int V;
+    cout<<"Input number of vertices "<<endl;
+    cin>>V;
+    int graph[100][100];
+    cout<<"Input adjacency matrix"<<endl;
+    for(int i=0;i<V;i++)
+    {
+        for(int j=0;j<V;j++)
+        {
+            cin>>graph[i][j];
+            if(graph[i][j]==-1)
+            {
+                graph[i][j]=INT_MAX;
+            }
+        }
+    }
+    floydWarshall(graph,V);
+    return 0;
+}
