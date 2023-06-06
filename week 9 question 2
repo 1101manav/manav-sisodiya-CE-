@@ -1,0 +1,46 @@
+/*
+Fractional Knapsack
+*/
+#include <iostream>
+#include <vector>
+#include <algorithm>
+using namespace std;
+bool compare(pair<int, int> a, pair<int, int> b) {
+    double p1 =(double)(a.first/a.second);
+    double p2 =(double)(b.first/b.second);
+    return p1 > p2;
+}
+
+double fractionalKnapsack(int k, vector<pair<int, int>>& item, int n) {
+    int maxProfit = 0;
+    sort(item.begin(), item.end(), compare);
+    for (int i = 0; i < n; i++) {
+        if (k > item[i].second) {
+            k -= item[i].second;
+            maxProfit += item[i].first;
+        } else {
+            maxProfit +=(double)(item[i].first) / item[i].second * k;
+            break;
+        }
+    }
+    return maxProfit;
+}
+
+int main() {
+    int n, k;
+    cout << "Enter the number of items: ";
+    cin >> n;
+    vector<pair<int, int>> items(n);
+    cout << "Enter the weight and value of each item:\n";
+    for (int i = 0; i < n; i++) {
+        int value, weight;
+        cin >>weight>>value;
+        items[i]=(make_pair(value, weight));
+    }
+    cout << "Enter the capacity of the knapsack: ";
+    cin >> k;
+    double maxProfit = fractionalKnapsack(k, items, n);
+    cout << "Maximum Profit: " << maxProfit << endl;
+
+    return 0;
+}
